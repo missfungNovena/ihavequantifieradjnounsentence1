@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>與虛擬馮老師語文對話練習（小一中文）</title>
+  <style>
+    :root {
+      --bg-cream: #FFFDF5;
+      --bg-pattern: #FEF3C7;
+      --header-yellow-start: #FEF08A;
+      --header-yellow-end: #FDE047;
+      --header-border: #FACC15;
+      --sky-blue: #0284C7;
+      --sky-blue-light: #E0F2FE;
+      --sky-blue-btn: #0EA5E9;
+      --grass-green: #16A34A;
+      --grass-green-light: #DCFCE7;
+      --grass-green-btn: #22C55E;
+      --coral-red: #EF4444;
+      --coral-light: #FEE2E2;
+      --amber-gold: #F59E0B;
+      --text-dark: #1E293B;
+      --text-muted: #475569;
+      --card-white: #FFFFFF;
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: "Noto Sans TC", "PingFang HK", "Microsoft JhengHei", "Heiti TC", sans-serif;
+      background-color: var(--bg-cream);
+      background-image: radial-gradient(var(--bg-pattern) 2px, transparent 2px);
+      background-size: 28px 28px;
+      color: var(--text-dark);
+      overflow: hidden;
+    }
+
+    /* 主容器 */
+    .app-shell {
+      max-width: 900px;
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 14px 12px;
+      gap: 10px;
+      position: relative;
+    }
+
+    /* 頂部標題與進度欄 */
+    .top-header {
+      background: linear-gradient(135deg, var(--header-yellow-start), var(--header-yellow-end));
+      border: 3px solid var(--header-border);
+      border-radius: 22px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-soft);
+      flex-shrink: 0;
+    }
+
+    .teacher-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .teacher-avatar-lg {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid #F59E0B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25);
+      overflow: hidden;
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #78350F;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      color: #15803D;
+      margin-top: 3px;
+    }
+
+    .mode-pill.cloud {
+      color: #0369A1;
+    }
+
+    /* 學習進度星星區 */
+    .progress-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 6px 14px;
+      border-radius: 16px;
+      border: 2px solid #FCD34D;
+      flex-shrink: 0;
+    }
+
+    .progress-label {
+      font-size: 15px;
+      font-weight: 800;
+      color: #92400E;
+      margin-bottom: 2px;
+    }
+
+    .stars-row {
+      display: flex;
+      gap: 6px;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .star-item {
+      filter: grayscale(100%) opacity(0.35);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+      display: inline-block;
+    }
+
+    .star-item.lit {
+      filter: grayscale(0%) opacity(1);
+      transform: scale(1.18);
+    }
+
+    /* 右上角工具按鈕 */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 8px 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 0 #CBD5E1;
+    }
+
+    .icon-btn:hover {
+      background: #F8FAFC;
+      transform: translateY(-1px);
+    }
+
+    .icon-btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .icon-btn.tts-off {
+      background: #F1F5F9;
+      color: #64748B;
+    }
+
+    /* 固定句式提示卡 */
+    .formula-banner {
+      background: linear-gradient(90deg, #E0F2FE 0%, #F0FDF4 100%);
+      border: 3px solid #7DD3FC;
+      border-radius: 18px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+      flex-shrink: 0;
+    }
+
+    .formula-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0369A1;
+      margin-right: 4px;
+    }
+
+    .formula-tag {
+      font-size: 18px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+    }
+
+    .tag-subject {
+      background: #FFEDD5;
+      color: #9A3412;
+      border-color: #FDBA74;
+    }
+
+    .tag-verb {
+      background: #FCE7F3;
+      color: #9D174D;
+      border-color: #F9A8D4;
+    }
+
+    .tag-quant {
+      background: #DBEAFE;
+      color: #1E40AF;
+      border-color: #93C5FD;
+    }
+
+    .tag-adj {
+      background: #F3E8FF;
+      color: #6B21A8;
+      border-color: #D8B4FE;
+    }
+
+    .tag-noun {
+      background: #DCFCE7;
+      color: #166534;
+      border-color: #86EFAC;
+    }
+
+    .formula-plus {
+      font-size: 18px;
+      font-weight: 900;
+      color: #64748B;
+    }
+
+    /* 對話訊息區 */
+    .chat-container {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.92);
+      border: 3px solid #E2E8F0;
+      border-radius: 24px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-soft);
+      scroll-behavior: smooth;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 88%;
+      animation: popIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .msg-row.teacher {
+      align-self: flex-start;
+    }
+
+    .msg-row.student {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .avatar-sm {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2.5px solid #F59E0B;
+      background: #FEF9C3;
+      overflow: hidden;
+    }
+
+    .msg-row.student .avatar-sm {
+      border-color: #22C55E;
+      background: #DCFCE7;
+      font-size: 24px;
+    }
+
+    .bubble-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sender-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .msg-row.student .sender-name {
+      text-align: right;
+    }
+
+    .bubble {
+      font-size: 20px;
+      line-height: 1.65;
+      padding: 14px 18px;
+      border-radius: 20px;
+      word-break: break-word;
+      white-space: pre-line;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .msg-row.teacher .bubble {
+      background: #F0F9FF;
+      border: 2.5px solid #BAE6FD;
+      border-top-left-radius: 6px;
+      color: #0F172A;
+    }
+
+    .msg-row.student .bubble {
+      background: #DCFCE7;
+      border: 2.5px solid #86EFAC;
+      border-top-right-radius: 6px;
+      color: #14532D;
+      font-weight: 600;
+    }
+
+    .replay-btn {
+      align-self: flex-start;
+      background: #FFFFFF;
+      border: 2px solid #7DD3FC;
+      color: #0284C7;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .replay-btn:hover {
+      background: #E0F2FE;
+    }
+
+    .replay-btn.speaking {
+      background: #0284C7;
+      color: #FFFFFF;
+      border-color: #0284C7;
+    }
+
+    /* 過關慶祝卡片 */
+    .victory-card {
+      background: linear-gradient(135deg, #FEF9C3 0%, #DCFCE7 100%);
+      border: 3px solid #FACC15;
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      animation: popIn 0.4s ease;
+    }
+
+    .victory-card.show {
+      display: flex;
+    }
+
+    .victory-stars {
+      font-size: 36px;
+      letter-spacing: 6px;
+    }
+
+    .victory-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #854D0E;
+    }
+
+    .restart-btn {
+      background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      padding: 12px 28px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #B45309;
+      transition: transform 0.15s ease;
+    }
+
+    .restart-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .restart-btn:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    /* 語音狀態提示條 */
+    .voice-status-bar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #FEF2F2;
+      border: 2px solid #FCA5A5;
+      color: #B91C1C;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .voice-status-bar.active {
+      display: flex;
+    }
+
+    .voice-status-bar.info {
+      background: #F0F9FF;
+      border-color: #7DD3FC;
+      color: #0369A1;
+    }
+
+    .rec-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #EF4444;
+      flex-shrink: 0;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* 底部輸入控制區 */
+    .input-area {
+      background: #FFFFFF;
+      border: 3px solid #CBD5E1;
+      border-radius: 22px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-soft);
+      flex-shrink: 0;
+    }
+
+    .input-area:focus-within {
+      border-color: var(--sky-blue-btn);
+    }
+
+    .chat-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 20px;
+      font-family: inherit;
+      color: var(--text-dark);
+      background: transparent;
+      padding: 8px 6px;
+      min-width: 0;
+    }
+
+    .chat-input::placeholder {
+      color: #94A3B8;
+      font-size: 18px;
+    }
+
+    .mic-btn {
+      background: linear-gradient(180deg, #38BDF8 0%, #0284C7 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      height: 52px;
+      padding: 0 16px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 0 #0369A1;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .mic-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .mic-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #0369A1;
+    }
+
+    .mic-btn.recording {
+      background: linear-gradient(180deg, #F87171 0%, #DC2626 100%);
+      box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.28), 0 4px 0 #991B1B;
+      animation: pulseMic 1.2s infinite;
+    }
+
+    @keyframes pulseMic {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5), 0 4px 0 #991B1B; }
+      70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0), 0 4px 0 #991B1B; }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 4px 0 #991B1B; }
+    }
+
+    .send-btn {
+      background: linear-gradient(180deg, #4ADE80 0%, #16A34A 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      height: 52px;
+      padding: 0 22px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 0 #15803D;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .send-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #15803D;
+    }
+
+    .send-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* 老師設定彈窗 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+      border: 3px solid #E2E8F0;
+      animation: popIn 0.22s ease;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .modal-header h2 {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .close-modal {
+      background: #F1F5F9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      color: #475569;
+    }
+
+    .modal-desc {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      background: #F8FAFC;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 16px;
+      border: 2px solid #CBD5E1;
+      border-radius: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      border-color: var(--sky-blue-btn);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .btn-secondary {
+      background: #F1F5F9;
+      color: #334155;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #0284C7;
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* 彩色紙屑畫布 */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* 響應式適配（平板與手機） */
+    @media (max-width: 680px) {
+      .app-shell {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .top-header {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+      }
+
+      .brand-text h1 {
+        font-size: 18px;
+      }
+
+      .progress-box {
+        order: 3;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 5px 14px;
+      }
+
+      .formula-banner {
+        padding: 8px 10px;
+        gap: 4px;
+      }
+
+      .formula-title {
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+        margin-bottom: 2px;
+      }
+
+      .formula-tag {
+        font-size: 15px;
+        padding: 3px 7px;
+      }
+
+      .formula-plus {
+        font-size: 15px;
+      }
+
+      .msg-row {
+        max-width: 95%;
+      }
+
+      .bubble {
+        font-size: 18px;
+        padding: 12px 14px;
+      }
+
+      .mic-btn span.btn-label {
+        display: none;
+      }
+
+      .mic-btn {
+        padding: 0 14px;
+      }
+
+      .send-btn {
+        padding: 0 16px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="app-shell">
+    <!-- 頂部馮老師資訊與學習進度 -->
+    <header class="top-header">
+      <div class="teacher-brand">
+        <div class="teacher-avatar-lg" aria-hidden="true" id="headerTeacherAvatar"></div>
+        <div class="brand-text">
+          <h1>與馮老師語文對話練習</h1>
+          <div class="mode-pill" id="engineModeBadge">🟢 離線智能引擎模式</div>
+        </div>
+      </div>
+
+      <div class="progress-box" aria-label="學習進度">
+        <div class="progress-label" id="progressText">第 1 題 / 共 3 題</div>
+        <div class="stars-row" id="starsRow">
+          <span class="star-item" id="star1">⭐</span>
+          <span class="star-item" id="star2">⭐</span>
+          <span class="star-item" id="star3">⭐</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="icon-btn" id="ttsToggleBtn" title="開啟或關閉自動粵語朗讀">
+          🔊 <span id="ttsToggleLabel">粵語朗讀開</span>
+        </button>
+        <button type="button" class="icon-btn" id="openSettingsBtn" title="老師 API 設定">
+          ⚙️ 老師設定
+        </button>
+      </div>
+    </header>
+
+    <!-- 固定句式提示橫幅 -->
+    <section class="formula-banner" aria-label="句式提示卡">
+      <span class="formula-title">💡 句式提示：</span>
+      <span class="formula-tag tag-subject">【 人物 / 動物 】</span>
+      <span class="formula-plus">＋</span>
+      <span class="formula-tag tag-verb">有</span>
+      <span class="formula-plus">＋</span>
+      <span class="formula-tag tag-quant">【 數量詞 】</span>
+      <span class="formula-plus">＋</span>
+      <span class="formula-tag tag-adj">【 形容詞 】</span>
+      <span class="formula-plus">＋</span>
+      <span class="formula-tag tag-noun">【 名詞 】</span>
+    </section>
+
+    <!-- 對話視窗 -->
+    <main class="chat-container" id="chatContainer" aria-live="polite">
+      <!-- 對話氣泡將由 JS 動態插入 -->
+      <div class="victory-card" id="victoryCard">
+        <div class="victory-stars">🌟 🌟 🌟</div>
+        <div class="victory-text">恭喜你完成全部 3 題句式練習！</div>
+        <button type="button" class="restart-btn" id="restartBtn">🔄 再玩一次</button>
+      </div>
+    </main>
+
+    <!-- 語音辨識 / 粵語語音狀態提示條 -->
+    <div class="voice-status-bar" id="voiceStatusBar" role="status">
+      <span class="rec-dot" id="voiceRecDot"></span>
+      <span id="voiceStatusText">正在聆聽中，請對著麥克風說話...</span>
+    </div>
+
+    <!-- 底部輸入與麥克風區 -->
+    <footer class="input-area">
+      <input
+        type="text"
+        id="userInput"
+        class="chat-input"
+        placeholder="請輸入完整句子，或按右邊麥克風說話..."
+        autocomplete="off"
+        enterkeyhint="send"
+      />
+      <button type="button" class="mic-btn" id="micBtn" title="點擊開始粵語語音輸入">
+        🎙️ <span class="btn-label" id="micBtnLabel">說話</span>
+      </button>
+      <button type="button" class="send-btn" id="sendBtn">
+        發送 ➤
+      </button>
+    </footer>
+  </div>
+
+  <!-- 老師設定視窗 -->
+  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">⚙️ 老師設定（AI 連線 / 離線模式）</h2>
+        <button type="button" class="close-modal" id="closeSettingsBtn" aria-label="關閉">✕</button>
+      </div>
+      <div class="modal-desc">
+        本程式內建<strong>「離線智能規則引擎」</strong>，無需填寫任何 API Key 即可直接在 GitHub Pages 完美運行並嚴格執行 7 層句式檢查。<br />
+        如需連接 OpenAI 或兼容格式的大語言模型，請在下方填寫設定（僅儲存於本機瀏覽器 <code>localStorage</code>）。
+      </div>
+      <div class="form-group">
+        <label for="apiKeyInput">OpenAI API Key（留空則自動使用離線智能引擎）</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="apiEndpointInput">API Endpoint（預設 OpenAI 官方接口）</label>
+        <input type="text" id="apiEndpointInput" placeholder="https://api.openai.com/v1/chat/completions" />
+      </div>
+      <div class="form-group">
+        <label for="apiModelInput">模型名稱 Model（預設 gpt-4o-mini）</label>
+        <input type="text" id="apiModelInput" placeholder="gpt-4o-mini" />
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="clearSettingsBtn">清除並用離線模式</button>
+        <button type="button" class="btn-primary" id="saveSettingsBtn">儲存設定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* =========================================================
+       * 1. 虛擬馮老師可愛 SVG 插畫
+       * ========================================================= */
+      const TEACHER_SVG = `
+        <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#FEF9C3"/>
+          <path d="M22 46 C20 22, 80 22, 78 46 C80 66, 74 78, 68 80 L32 80 C26 78, 20 66, 22 46 Z" fill="#334155"/>
+          <path d="M26 88 C28 74, 72 74, 74 88 Z" fill="#38BDF8"/>
+          <path d="M40 75 L50 86 L60 75 Z" fill="#FFFFFF"/>
+          <ellipse cx="50" cy="50" rx="23" ry="25" fill="#FDE68A"/>
+          <ellipse cx="50" cy="51" rx="22" ry="24" fill="#FED7AA"/>
+          <path d="M27 44 C29 26, 71 26, 73 44 C66 36, 56 35, 50 41 C44 35, 34 36, 27 44 Z" fill="#334155"/>
+          <polygon points="68,31 70,35 74,35 71,38 72,42 68,39 64,42 65,38 62,35 66,35" fill="#FACC15"/>
+          <ellipse cx="36" cy="56" rx="4.5" ry="2.8" fill="#FDA4AF" opacity="0.75"/>
+          <ellipse cx="64" cy="56" rx="4.5" ry="2.8" fill="#FDA4AF" opacity="0.75"/>
+          <circle cx="40" cy="49" r="8" fill="#FFFFFF" fill-opacity="0.35" stroke="#92400E" stroke-width="2.4"/>
+          <circle cx="60" cy="49" r="8" fill="#FFFFFF" fill-opacity="0.35" stroke="#92400E" stroke-width="2.4"/>
+          <line x1="48" y1="49" x2="52" y2="49" stroke="#92400E" stroke-width="2.4"/>
+          <circle cx="40" cy="49" r="2.6" fill="#1E293B"/>
+          <circle cx="60" cy="49" r="2.6" fill="#1E293B"/>
+          <circle cx="41" cy="48" r="0.9" fill="#FFFFFF"/>
+          <circle cx="61" cy="48" r="0.9" fill="#FFFFFF"/>
+          <path d="M43 60 Q50 67 57 60" fill="none" stroke="#B91C1C" stroke-width="2.6" stroke-linecap="round"/>
+        </svg>
+      `;
+
+      /* =========================================================
+       * 2. 題庫、固定回覆與系統提示詞（嚴格遵守教學規範）
+       * ========================================================= */
+      const QUESTIONS = [
+        {
+          id: 1,
+          question: "弟弟有甚麼東西？",
+          answers: ["弟弟有一個藍色的書包"]
+        },
+        {
+          id: 2,
+          question: "熊貓有甚麼東西？",
+          answers: [
+            "熊貓有兩個圓圓的耳朵",
+            "熊貓有一雙圓圓的耳朵",
+            "熊貓有一對圓圓的耳朵"
+          ]
+        },
+        {
+          id: 3,
+          question: "妹妹有甚麼東西？",
+          answers: ["妹妹有三個甜甜的西瓜"]
+        }
+      ];
+
+      const OPENING_MESSAGE =
+        "你好呀！今日我們一起看圖練習句式，請你用『……有……』回答我的問題呀！😊\n\n第 1 題：弟弟有甚麼東西？";
+
+      const ALL_COMPLETED_MESSAGE =
+        "太厲害了！你已經看圖完成所有題目，全部都答對了！拍拍手！👏🌟";
+
+      const FIXED_REPLIES = {
+        check1_cantonese: "我們要用書面語說話喔！請你以『……有……』進行交談。",
+        check2_noYou: "請你用完整句子回答，並以『……有……』進行交談。",
+        check3_noSubject: "句子最前面要有『人物』或『動物』（例如：弟弟、熊貓、妹妹），請你再試一次！",
+        check4_noQuantifier: "句子中要有數量詞（例如：一個、兩個、三個），要放在形容詞前面喔！",
+        check5_noAdjective: "句子中要有形容詞，要放在名詞前面喔！",
+        check6_noNoun: "句子中要有名詞，要放在句子的最後喔！",
+        check7_wrongOrder: "馮老師剛才教了：【人物 + 有 + 數量詞 + 形容詞 + 名詞】的句式，請你調整一下次序再試試看！",
+        wrongContent: "你的句式完全正確，真棒！👍 不過內容好像跟圖畫有點不同，請你再仔細看一看手上的圖畫，重新回答一次！"
+      };
+
+      /* =========================================================
+       * 3. 簡繁自動轉換表（確保語音輸入輸出標準繁體中文）
+       * ========================================================= */
+      const SIMPLIFIED_TO_TRADITIONAL = {
+        "书": "書", "包": "包", "蓝": "藍", "红": "紅", "绿": "綠", "黄": "黃",
+        "个": "個", "两": "兩", "双": "雙", "对": "對", "只": "隻", "条": "條",
+        "张": "張", "颗": "顆", "朵": "朵", "辆": "輛", "架": "架", "顶": "頂",
+        "圆": "圓", "耳": "耳", "猫": "貓", "熊": "熊", "弟": "弟",
+        "妹": "妹", "甜": "甜", "西": "西", "瓜": "瓜", "有": "有", "的": "的",
+        "一": "一", "二": "二", "三": "三", "四": "四", "五": "五", "六": "六",
+        "七": "七", "八": "八", "九": "九", "十": "十", "几": "幾", "这": "這",
+        "那": "那", "么": "麼", "什": "什", "没": "沒", "说": "說", "话": "話",
+        "请": "請", "你": "你", "我": "我", "他": "他", "她": "她", "们": "們",
+        "铅": "鉛", "笔": "筆", "橡": "橡", "胶": "膠", "课": "課", "本": "本",
+        "水": "水", "壶": "壺", "眼": "眼", "镜": "鏡", "帽": "帽", "子": "子",
+        "衣": "衣", "服": "服", "裤": "褲", "鞋": "鞋", "袜": "襪", "伞": "傘",
+        "表": "錶", "玩": "玩", "具": "具", "球": "球", "飞": "飛", "机": "機",
+        "车": "車", "苹": "蘋", "果": "果", "香": "香", "蕉": "蕉", "草": "草",
+        "莓": "莓", "葡": "葡", "萄": "萄", "桃": "桃", "梨": "梨", "菠": "菠",
+        "萝": "蘿", "柠": "檸", "檬": "檬", "糖": "糖", "饼": "餅", "干": "乾",
+        "蛋": "蛋", "糕": "糕", "面": "麵", "奶": "奶", "花": "花", "树": "樹",
+        "叶": "葉", "星": "星", "阳": "陽", "云": "雲", "房": "房", "桌": "桌",
+        "椅": "椅", "灯": "燈", "电": "電", "脑": "腦", "视": "視", "东": "東",
+        "长": "長", "短": "短", "高": "高", "矮": "矮", "胖": "胖", "瘦": "瘦",
+        "方": "方", "扁": "扁", "尖": "尖", "弯": "彎", "软": "軟", "硬": "硬",
+        "滑": "滑", "酸": "酸", "辣": "辣", "旧": "舊", "漂": "漂", "亮": "亮",
+        "美": "美", "丽": "麗", "爱": "愛", "净": "淨", "脏": "髒", "聪": "聰",
+        "明": "明", "快": "快", "乐": "樂", "开": "開", "心": "心", "鲜": "鮮",
+        "凉": "涼", "温": "溫", "暖": "暖", "轻": "輕", "重": "重", "哥": "哥",
+        "姐": "姐", "爸": "爸", "妈": "媽", "爷": "爺", "师": "師",
+        "学": "學", "生": "生", "朋": "朋", "友": "友", "男": "男", "女": "女",
+        "孩": "孩", "宝": "寶", "婴": "嬰", "儿": "兒", "狗": "狗", "兔": "兔",
+        "鸟": "鳥", "象": "象", "颈": "頸", "鹿": "鹿", "猴": "猴", "虎": "虎",
+        "狮": "獅", "猪": "豬", "羊": "羊", "马": "馬", "鱼": "魚", "乌": "烏",
+        "龟": "龜", "蛙": "蛙", "鸭": "鴨", "鸡": "雞", "龙": "龍", "鼠": "鼠",
+        "狐": "狐", "狸": "狸", "企": "企", "鹅": "鵝", "豚": "豚", "蜂": "蜂",
+        "蝴": "蝴", "蝶": "蝶", "系": "係", "唔": "唔", "冇": "冇", "嘢": "嘢",
+        "啲": "啲", "咁": "咁", "睇": "睇", "喺": "喺", "嘅": "嘅", "咗": "咗"
+      };
+
+      function toTraditionalChinese(text) {
+        if (!text) return "";
+        let result = "";
+        for (const ch of text) {
+          result += SIMPLIFIED_TO_TRADITIONAL[ch] || ch;
+        }
+        return result;
+      }
+
+      /* =========================================================
+       * 4. 離線智能規則引擎（嚴格 7 層句式檢查 + 內容核對 + 防離題）
+       * ========================================================= */
+      const CANTONESE_WORDS = [
+        "呢個", "嗰個", "呢啲", "嗰啲", "呢隻", "嗰隻", "呢件", "嗰件",
+        "唔係", "唔知", "唔識", "唔好", "唔", "冇", "點解", "做咩", "乜嘢",
+        "咩", "係咪", "邊個", "邊度", "佢哋", "我哋", "你哋", "佢", "啲",
+        "咁", "睇", "食", "嘢", "喺", "嘅", "咗", "緊", "晒", "靚",
+        "仲有", "同埋", "畀", "俾", "攞", "拎", "搵", "諗", "講"
+      ];
+
+      const SUBJECT_WORDS = [
+        "弟弟", "熊貓", "妹妹",
+        "哥哥", "姐姐", "姊姊", "爸爸", "媽媽", "爺爺", "奶奶", "公公", "婆婆",
+        "叔叔", "阿姨", "老師", "馮老師", "同學", "小朋友", "小男孩", "小女孩",
+        "男孩子", "女孩子", "男孩", "女孩", "寶寶", "嬰兒", "學生", "小明", "小美",
+        "小華", "我", "他", "她",
+        "小貓", "貓咪", "貓", "小狗", "狗", "小白兔", "小兔", "兔子", "小鳥", "鳥",
+        "小熊", "熊", "大象", "長頸鹿", "小猴", "猴子", "老虎", "獅子", "小豬", "豬",
+        "小羊", "羊", "小馬", "馬", "小魚", "魚", "烏龜", "青蛙", "小鴨", "鴨子",
+        "小雞", "雞", "恐龍", "松鼠", "狐狸", "企鵝", "海豚", "蜜蜂", "蝴蝶"
+      ];
+
+      const ADJECTIVE_WORDS = [
+        "藍色的", "藍色", "藍藍的", "藍藍", "藍",
+        "圓圓的", "圓圓", "圓的", "圓",
+        "甜甜的", "甜甜", "甜的", "甜",
+        "紅色的", "紅色", "紅紅的", "紅紅", "紅",
+        "黃色的", "黃色", "黃黃的", "黃黃", "黃",
+        "綠色的", "綠色", "綠綠的", "綠綠", "綠",
+        "白色的", "白色", "白白的", "白白", "白",
+        "黑色的", "黑色", "黑黑的", "黑黑", "黑",
+        "紫色的", "紫色", "紫紫的", "紫",
+        "橙色的", "橙色", "橘色的", "橘色",
+        "粉紅色的", "粉紅色", "粉紅", "灰色的", "灰色", "棕色的", "棕色", "咖啡色的", "咖啡色",
+        "彩色的", "彩色", "五顏六色的", "五顏六色",
+        "大大的", "大大", "大的", "大",
+        "小小的", "小小", "小的", "小",
+        "長長的", "長長", "長的", "長",
+        "短短的", "短短", "短的", "短",
+        "高高的", "高高", "高的", "高",
+        "矮矮的", "矮矮", "矮的", "矮",
+        "胖胖的", "胖胖", "胖的", "胖",
+        "瘦瘦的", "瘦瘦", "瘦的", "瘦",
+        "方方的", "方方", "方的", "方",
+        "扁扁的", "扁扁", "尖尖的", "尖尖", "彎彎的", "彎彎",
+        "軟軟的", "軟軟", "硬硬的", "硬硬", "滑滑的", "滑滑", "毛茸茸的", "毛茸茸",
+        "酸酸的", "酸酸", "酸", "苦苦的", "苦苦", "辣辣的", "辣辣",
+        "香香的", "香香", "香", "臭臭的", "臭臭",
+        "新新的", "新新", "新的", "新", "舊舊的", "舊舊", "舊的", "舊",
+        "漂亮的", "漂亮", "美麗的", "美麗", "可愛的", "可愛", "好看的", "好看",
+        "乾淨的", "乾淨", "整潔的", "整潔", "骯髒的", "骯髒",
+        "聰明的", "聰明", "快樂的", "快樂", "開心的", "開心",
+        "美味的", "美味", "好吃的", "好吃", "可口的", "可口", "多汁的", "多汁",
+        "新鮮的", "新鮮", "冰涼的", "冰涼", "溫暖的", "溫暖",
+        "重重的", "重重", "輕輕的", "輕輕"
+      ];
+
+      const NOUN_WORDS = [
+        "書包", "耳朵", "西瓜",
+        "背包", "袋子", "皮包", "鉛筆", "原子筆", "毛筆", "水彩筆", "蠟筆", "筆",
+        "尺子", "尺", "橡皮擦", "橡皮", "擦膠", "故事書", "課本", "書本", "書",
+        "作業簿", "作業", "筆記本", "本子", "文具盒", "文具", "筆盒", "筆袋",
+        "水壺", "水杯", "杯子", "眼鏡", "帽子", "外套", "衣服", "褲子", "鞋子",
+        "襪子", "手套", "圍巾", "雨傘", "手錶", "玩具", "積木", "布偶", "洋娃娃",
+        "皮球", "足球", "籃球", "氣球", "飛機", "汽車", "單車", "自行車",
+        "眼睛", "鼻子", "嘴巴", "頭髮", "尾巴", "牙齒", "手", "腳",
+        "水果", "蘋果", "香蕉", "橙子", "橘子", "柳丁", "草莓", "葡萄", "提子",
+        "水蜜桃", "桃子", "雪梨", "梨子", "梨", "芒果", "鳳梨", "菠蘿", "哈密瓜",
+        "木瓜", "櫻桃", "藍莓", "檸檬", "番茄", "糖果", "餅乾", "蛋糕", "麵包",
+        "牛奶", "果汁", "雪糕", "冰淇淋", "花朵", "花", "樹葉", "樹", "草",
+        "石頭", "星星", "月亮", "太陽", "雲", "雨", "房子", "桌子", "椅子",
+        "床", "燈", "電話", "手機", "電腦", "電視", "相機", "東西", "物品"
+      ];
+
+      const QUANTIFIER_REGEX =
+        /(?:[一二兩三四五六七八九十幾1-9]|10)(?:個|雙|對|隻|條|件|本|支|枝|張|把|塊|顆|粒|片|朵|棵|輛|架|台|座|間|頂|副|套|盒|包|袋|瓶|杯|碗|盤|串|群|匹|頭|尾|位|名|種|樣)/;
+
+      function findFirstMatch(text, wordList) {
+        let bestIdx = -1;
+        let bestWord = "";
+        for (const w of wordList) {
+          const idx = text.indexOf(w);
+          if (idx !== -1) {
+            if (bestIdx === -1 || idx < bestIdx || (idx === bestIdx && w.length > bestWord.length)) {
+              bestIdx = idx;
+              bestWord = w;
+            }
+          }
+        }
+        return bestIdx === -1 ? null : { index: bestIdx, word: bestWord };
+      }
+
+      function hasCantonese(text) {
+        for (const cw of CANTONESE_WORDS) {
+          if (text.includes(cw)) return true;
+        }
+        const cleaned = text.replace(/關係|聯繫|系統/g, "");
+        if (cleaned.includes("係")) return true;
+        return false;
+      }
+
+      function isGibberishOrOffTopic(cleanText) {
+        if (!/[\u4e00-\u9fa5]/.test(cleanText)) {
+          return true;
+        }
+        const offTopicPatterns = [
+          /^(你好|您好|哈囉|嗨|早晨|午安|晚安|拜拜|再見)$/,
+          /^(老師好|馮老師好|謝謝|多謝|唔該)$/,
+          /(幾點|放學|下課|天氣|吃飯|玩遊戲|你是誰|你叫甚麼|你叫什麼)/
+        ];
+        if (!cleanText.includes("有")) {
+          for (const pat of offTopicPatterns) {
+            if (pat.test(cleanText)) return true;
+          }
+        }
+        return false;
+      }
+
+      function evaluateWithRuleEngine(rawInput, currentQIndex) {
+        if (currentQIndex >= QUESTIONS.length) {
+          return {
+            reply: ALL_COMPLETED_MESSAGE + "\n\n如果想重新練習，可以按下面的「🔄 再玩一次」按鈕喔！😊",
+            passed: false,
+            completedAll: true
+          };
+        }
+
+        const currentQ = QUESTIONS[currentQIndex];
+        const traditional = toTraditionalChinese(rawInput.trim());
+        const cleanText = traditional.replace(/[\s，,。\.！!？?、；;：:「」『』（）()]/g, "");
+
+        // 0. 無意義亂碼或完全離題處理
+        if (!cleanText || isGibberishOrOffTopic(cleanText)) {
+          return {
+            reply: `我們先專心看圖回答這道題目喔！第 ${currentQ.id} 題：${currentQ.question}`,
+            passed: false
+          };
+        }
+
+        // 【檢查 1：書面語規範】
+        if (hasCantonese(cleanText)) {
+          return {
+            reply: FIXED_REPLIES.check1_cantonese,
+            passed: false
+          };
+        }
+
+        // 【檢查 2：核心動詞「有」】
+        const youIndex = cleanText.indexOf("有");
+        if (youIndex === -1) {
+          return {
+            reply: FIXED_REPLIES.check2_noYou,
+            passed: false
+          };
+        }
+
+        // 【檢查 3：缺少「人物（或動物）」】
+        const beforeYou = cleanText.slice(0, youIndex);
+        const subjectMatch = findFirstMatch(beforeYou, SUBJECT_WORDS);
+        if (!subjectMatch) {
+          return {
+            reply: FIXED_REPLIES.check3_noSubject,
+            passed: false
+          };
+        }
+
+        const afterYou = cleanText.slice(youIndex + 1);
+
+        // 【檢查 4：缺少「數量詞」】
+        const quantMatch = afterYou.match(QUANTIFIER_REGEX);
+        if (!quantMatch) {
+          return {
+            reply: FIXED_REPLIES.check4_noQuantifier,
+            passed: false
+          };
+        }
+
+        // 【檢查 5：缺少「形容詞」】
+        const afterYouNoQuant = afterYou.replace(quantMatch[0], "###");
+        let adjMatch = findFirstMatch(afterYouNoQuant, ADJECTIVE_WORDS);
+        if (!adjMatch) {
+          const deAdj = afterYouNoQuant.match(/([\u4e00-\u9fa5]{1,3}的)/);
+          if (deAdj) {
+            adjMatch = { index: deAdj.index, word: deAdj[1] };
+          }
+        }
+        if (!adjMatch) {
+          return {
+            reply: FIXED_REPLIES.check5_noAdjective,
+            passed: false
+          };
+        }
+
+        // 【檢查 6：缺少「名詞」】
+        const nounMatch = findFirstMatch(afterYou, NOUN_WORDS);
+        if (!nounMatch) {
+          return {
+            reply: FIXED_REPLIES.check6_noNoun,
+            passed: false
+          };
+        }
+
+        // 【檢查 7：詞語次序錯誤】
+        const quantPos = afterYou.indexOf(quantMatch[0]);
+        const adjPos = afterYou.indexOf(adjMatch.word);
+        const nounPos = nounMatch.index;
+
+        const isOrderValid =
+          subjectMatch.index < youIndex &&
+          quantPos !== -1 &&
+          adjPos !== -1 &&
+          nounPos !== -1 &&
+          quantPos < adjPos &&
+          adjPos < nounPos &&
+          nounPos + nounMatch.word.length === afterYou.length;
+
+        if (!isOrderValid) {
+          return {
+            reply: FIXED_REPLIES.check7_wrongOrder,
+            passed: false
+          };
+        }
+
+        // 【情況 B：句式完全正確，且內容完全符合標準答案】
+        if (currentQ.answers.includes(cleanText)) {
+          if (currentQIndex < QUESTIONS.length - 1) {
+            const nextQ = QUESTIONS[currentQIndex + 1];
+            return {
+              reply: `答對了！句式和內容都非常標準！🌟 我們繼續下一題吧：\n\n第 ${nextQ.id} 題：${nextQ.question}`,
+              passed: true
+            };
+          } else {
+            return {
+              reply: ALL_COMPLETED_MESSAGE,
+              passed: true,
+              completedAll: true
+            };
+          }
+        }
+
+        // 【情況 A：句式正確，但事實/內容與標準答案不符】
+        return {
+          reply: FIXED_REPLIES.wrongContent,
+          passed: false
+        };
+      }
+
+      /* =========================================================
+       * 5. OpenAI 兼容 API 串接（若老師有設定 API Key）
+       * ========================================================= */
+      function buildSystemPrompt(currentQIndex) {
+        const currentQ = QUESTIONS[currentQIndex];
+        return `你是一位親切、有耐心的香港小學語文老師（馮老師），正在指導香港小學一年級（6-7歲）學生看著工作紙圖畫練習句式。
+請嚴格遵守以下所有規則，絕對不可偏離：
+
+1. 目標句式：【人物（或動物） + 有 + 數量詞（數字+量詞） + 形容詞 + 名詞】
+2. 當前題目（第 ${currentQ.id} 題 / 共 3 題）：${currentQ.question}
+   - 第 1 題標準答案：弟弟有一個藍色的書包。
+   - 第 2 題標準答案（三者皆可）：熊貓有兩個圓圓的耳朵。 / 熊貓有一雙圓圓的耳朵。 / 熊貓有一對圓圓的耳朵。
+   - 第 3 題標準答案：妹妹有三個甜甜的西瓜。
+   （句末標點符號可寬容處理）
+
+3. 七層句式與語言規範檢查（由上而下依序檢查，每次只指出最先發現的一個錯誤，絕不一次列出多個錯誤，也絕不直接說出正確答案）：
+- 【檢查 1：書面語規範】若包含廣東話口語字詞（如：呢個、嗰個、唔係、冇、點解、做咩、係咪、邊個、佢、啲、咁、睇、食、嘢等），必須回覆：
+  我們要用書面語說話喔！請你以『……有……』進行交談。
+- 【檢查 2：核心動詞「有」】若句子中完全沒有「有」字，必須回覆：
+  請你用完整句子回答，並以『……有……』進行交談。
+- 【檢查 3：缺少「人物（或動物）」】若有「有」字，但前面沒有人物或動物，必須回覆：
+  句子最前面要有『人物』或『動物』（例如：弟弟、熊貓、妹妹），請你再試一次！
+- 【檢查 4：缺少「數量詞」】若沒有數量詞（數字+量詞，如一個、兩個、一雙、一對、三個），必須回覆：
+  句子中要有數量詞（例如：一個、兩個、三個），要放在形容詞前面喔！
+- 【檢查 5：缺少「形容詞」】若沒有形容詞（如藍色、圓圓、甜甜），必須回覆：
+  句子中要有形容詞，要放在名詞前面喔！
+- 【檢查 6：缺少「名詞」】若沒有名詞（如書包、耳朵、西瓜），必須回覆：
+  句子中要有名詞，要放在句子的最後喔！
+- 【檢查 7：詞語次序錯誤】若齊備五個成分但排列次序不是【人物/動物 + 有 + 數量詞 + 形容詞 + 名詞】，必須回覆：
+  馮老師剛才教了：【人物 + 有 + 數量詞 + 形容詞 + 名詞】的句式，請你調整一下次序再試試看！
+
+4. 內容核對、過關與防離題：
+- 【情況 A】句式正確，但內容與目前題目標準答案不符，必須回覆：
+  你的句式完全正確，真棒！👍 不過內容好像跟圖畫有點不同，請你再仔細看一看手上的圖畫，重新回答一次！
+- 【情況 B】句式完全正確且內容符合標準答案：
+  - 若為第 1 題，必須在回覆最開頭加上標記 [PASS] 並回覆：
+    [PASS]答對了！句式和內容都非常標準！🌟 我們繼續下一題吧：\n\n第 2 題：熊貓有甚麼東西？
+  - 若為第 2 題，必須在回覆最開頭加上標記 [PASS] 並回覆：
+    [PASS]答對了！句式和內容都非常標準！🌟 我們繼續下一題吧：\n\n第 3 題：妹妹有甚麼東西？
+  - 若為第 3 題，必須在回覆最開頭加上標記 [PASS] 並回覆：
+    [PASS]太厲害了！你已經看圖完成所有題目，全部都答對了！拍拍手！👏🌟
+- 【防離題處理】若學生輸入無意義亂碼或完全偏離題目（且未觸發上述具體句式引導時），必須回覆：
+  我們先專心看圖回答這道題目喔！第 ${currentQ.id} 題：${currentQ.question}`;
+      }
+
+      async function evaluateWithLLM(rawInput, currentQIndex, settings, history) {
+        const endpoint = (settings.endpoint || "https://api.openai.com/v1/chat/completions").trim();
+        const model = (settings.model || "gpt-4o-mini").trim();
+
+        const messages = [
+          { role: "system", content: buildSystemPrompt(currentQIndex) },
+          ...history.slice(-6),
+          { role: "user", content: toTraditionalChinese(rawInput.trim()) }
+        ];
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${settings.apiKey.trim()}`
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: 0.1,
+            max_tokens: 220
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        let text = data?.choices?.[0]?.message?.content?.trim() || "";
+        if (!text) {
+          throw new Error("Empty API response");
+        }
+
+        const passed = text.startsWith("[PASS]");
+        text = text.replace(/^\[PASS\]\s*/i, "");
+
+        return {
+          reply: text,
+          passed,
+          completedAll: passed && currentQIndex === QUESTIONS.length - 1
+        };
+      }
+
+      /* =========================================================
+       * 6. 強制粵語語音朗讀功能（TTS - Strict Cantonese zh-HK / yue）
+       * ========================================================= */
+      let ttsEnabled = true;
+      let availableVoices = [];
+      let activeReplayBtn = null;
+      let hasWarnedMissingCantoneseVoice = false;
+
+      function refreshVoices() {
+        if ("speechSynthesis" in window) {
+          const list = window.speechSynthesis.getVoices();
+          if (list && list.length > 0) {
+            availableVoices = list;
+          }
+        }
+        return availableVoices;
+      }
+
+      if ("speechSynthesis" in window) {
+        refreshVoices();
+        window.speechSynthesis.onvoiceschanged = refreshVoices;
+      }
+
+      function ensureVoicesLoaded(timeoutMs = 650) {
+        return new Promise((resolve) => {
+          if (!("speechSynthesis" in window)) {
+            resolve([]);
+            return;
+          }
+          const existing = refreshVoices();
+          if (existing.length > 0) {
+            resolve(existing);
+            return;
+          }
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            resolve(refreshVoices());
+          };
+          const prevHandler = window.speechSynthesis.onvoiceschanged;
+          window.speechSynthesis.onvoiceschanged = () => {
+            if (typeof prevHandler === "function") prevHandler();
+            finish();
+          };
+          setTimeout(finish, timeoutMs);
+        });
+      }
+
+      function isCantoneseVoice(voice) {
+        if (!voice) return false;
+        const langNorm = (voice.lang || "").replace(/_/g, "-").toLowerCase();
+        const nameNorm = (voice.name || "").toLowerCase();
+
+        // 嚴格匹配香港粵語語言代碼（zh-HK / yue / yue-HK / yue-Hant-HK）
+        if (langNorm === "zh-hk" || langNorm.startsWith("yue")) {
+          return true;
+        }
+        // 嚴格匹配常見系統粵語語音包名稱（絕不匹配普通話/國語）
+        if (
+          /cantonese|hong\s*kong|香港|粵語|廣東話|广东话|sinji|hiugaai|hiumaan|wanlung/i.test(nameNorm)
+        ) {
+          return true;
+        }
+        return false;
+      }
+
+      function pickCantoneseVoice() {
+        const voices = refreshVoices();
+        const cantoneseVoices = voices.filter(isCantoneseVoice);
+        if (!cantoneseVoices.length) return null;
+
+        // 優先選擇親切女聲（HiuGaai / HiuMaan / Sinji / Google 粵語）
+        return (
+          cantoneseVoices.find((v) => /hiugaai|hiumaan|sinji|female|女/i.test(v.name)) ||
+          cantoneseVoices.find((v) => /google/i.test(v.name)) ||
+          cantoneseVoices[0]
+        );
+      }
+
+      function sanitizeTextForCantoneseSpeech(text) {
+        const numMap = { "1": "一", "2": "二", "3": "三" };
+        return text
+          // 將「第 1 題」轉成「第一題」，確保粵語讀音自然連貫
+          .replace(/第\s*([123])\s*題/g, (_, d) => `第${numMap[d]}題`)
+          // 移除表情符號與裝飾框線，避免語音引擎讀出無關符號名
+          .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
+          .replace(/……/g, "，")
+          .replace(/『|』|「|」/g, "")
+          .replace(/\n+/g, "。")
+          .trim();
+      }
+
+      async function speakText(text, btnElement = null, forceSpeak = false) {
+        if (!("speechSynthesis" in window)) return;
+        if (!ttsEnabled && !forceSpeak) return;
+
+        await ensureVoicesLoaded(650);
+
+        window.speechSynthesis.cancel();
+        if (activeReplayBtn) {
+          activeReplayBtn.classList.remove("speaking");
+          activeReplayBtn = null;
+        }
+
+        const cleanSpeech = sanitizeTextForCantoneseSpeech(text);
+        if (!cleanSpeech) return;
+
+        const cantoneseVoice = pickCantoneseVoice();
+
+        // 若裝置系統完全未安裝任何粵語語音包，給予一次性友善提示，絕不降級使用普通話語音物件
+        if (!cantoneseVoice && availableVoices.length > 0 && !hasWarnedMissingCantoneseVoice) {
+          hasWarnedMissingCantoneseVoice = true;
+          showVoiceStatus(
+            "提示：此裝置暫未偵測到系統「粵語（香港）」語音包，已強制鎖定 zh-HK 粵語模式（建議使用 iPad/iPhone Safari 或已安裝香港粵語語音的 Edge/Chrome）。",
+            true,
+            7000
+          );
+        }
+
+        const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+        if (cantoneseVoice) {
+          utterance.voice = cantoneseVoice;
+          utterance.lang = cantoneseVoice.lang || "zh-HK";
+        } else {
+          utterance.lang = "zh-HK";
+        }
+        utterance.rate = 0.92;
+        utterance.pitch = 1.05;
+
+        if (btnElement) {
+          activeReplayBtn = btnElement;
+          btnElement.classList.add("speaking");
+        }
+
+        utterance.onend = () => {
+          if (activeReplayBtn) {
+            activeReplayBtn.classList.remove("speaking");
+            activeReplayBtn = null;
+          }
+        };
+
+        utterance.onerror = () => {
+          if (activeReplayBtn) {
+            activeReplayBtn.classList.remove("speaking");
+            activeReplayBtn = null;
+          }
+        };
+
+        setTimeout(() => {
+          try {
+            window.speechSynthesis.speak(utterance);
+          } catch (err) {
+            // 忽略瀏覽器首次自動播放限制錯誤
+          }
+        }, 30);
+      }
+
+      /* =========================================================
+       * 7. 語音輸入（Web Speech API - 粵語 zh-HK）
+       * ========================================================= */
+      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let isRecording = false;
+      let statusHideTimer = null;
+
+      function showVoiceStatus(message, isInfo = false, autoHideMs = 0) {
+        const bar = document.getElementById("voiceStatusBar");
+        const dot = document.getElementById("voiceRecDot");
+        const textEl = document.getElementById("voiceStatusText");
+
+        if (statusHideTimer) {
+          clearTimeout(statusHideTimer);
+          statusHideTimer = null;
+        }
+
+        textEl.textContent = message;
+        bar.classList.toggle("info", isInfo);
+        dot.style.display = isInfo ? "none" : "inline-block";
+        bar.classList.add("active");
+
+        if (autoHideMs > 0) {
+          statusHideTimer = setTimeout(() => {
+            bar.classList.remove("active");
+          }, autoHideMs);
+        }
+      }
+
+      function hideVoiceStatus() {
+        const bar = document.getElementById("voiceStatusBar");
+        bar.classList.remove("active");
+      }
+
+      function setRecordingUI(recording) {
+        isRecording = recording;
+        const micBtn = document.getElementById("micBtn");
+        const micLabel = document.getElementById("micBtnLabel");
+        if (recording) {
+          micBtn.classList.add("recording");
+          micLabel.textContent = "聆聽中...";
+        } else {
+          micBtn.classList.remove("recording");
+          micLabel.textContent = "說話";
+        }
+      }
+
+      function initSpeechRecognition() {
+        if (!SpeechRecognitionAPI) return;
+
+        recognition = new SpeechRecognitionAPI();
+        recognition.lang = "zh-HK";
+        recognition.interimResults = true;
+        recognition.continuous = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+          if ("speechSynthesis" in window) {
+            window.speechSynthesis.cancel();
+          }
+          setRecordingUI(true);
+          showVoiceStatus("正在聆聽中，請對著麥克風說出完整句子...", false);
+        };
+
+        recognition.onresult = (event) => {
+          let transcript = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const traditionalText = toTraditionalChinese(transcript);
+          const inputEl = document.getElementById("userInput");
+          inputEl.value = traditionalText;
+        };
+
+        recognition.onerror = (event) => {
+          setRecordingUI(false);
+          if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            showVoiceStatus("未取得麥克風權限，請在瀏覽器允許使用麥克風，或直接用鍵盤輸入喔！", true, 5000);
+          } else if (event.error === "no-speech") {
+            showVoiceStatus("馮老師剛才沒有聽到聲音，請再按一次麥克風說話喔！", true, 4000);
+          } else {
+            showVoiceStatus("語音辨識未能完成，請再試一次或使用鍵盤輸入。", true, 4000);
+          }
+        };
+
+        recognition.onend = () => {
+          const wasRecording = isRecording;
+          setRecordingUI(false);
+          const inputEl = document.getElementById("userInput");
+          if (wasRecording && inputEl.value.trim()) {
+            showVoiceStatus("辨識完成！請檢查句子是否正確，然後按「發送」喔！😊", true, 4500);
+            inputEl.focus();
+          } else if (wasRecording) {
+            hideVoiceStatus();
+          }
+        };
+      }
+
+      function toggleVoiceInput() {
+        if (!SpeechRecognitionAPI) {
+          showVoiceStatus("此瀏覽器暫不支援語音輸入，建議使用 Chrome / Edge，或直接用鍵盤打字喔！", true, 5500);
+          return;
+        }
+        if (!recognition) {
+          initSpeechRecognition();
+        }
+        if (isRecording) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+          } catch (err) {
+            setRecordingUI(false);
+          }
+        }
+      }
+
+      /* =========================================================
+       * 8. 過關彩色紙屑（Confetti）動畫
+       * ========================================================= */
+      function launchConfetti() {
+        const canvas = document.getElementById("confettiCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ["#FACC15", "#38BDF8", "#4ADE80", "#F472B6", "#A78BFA", "#FB923C"];
+        const pieces = Array.from({ length: 130 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 11 + 6,
+          h: Math.random() * 7 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 4,
+          vy: Math.random() * 3.5 + 2.5,
+          angle: Math.random() * Math.PI * 2,
+          spin: (Math.random() - 0.5) * 0.15
+        }));
+
+        let frame = 0;
+        const maxFrames = 210;
+
+        function render() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (const p of pieces) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.angle += p.spin;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.angle);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+          frame++;
+          if (frame < maxFrames) {
+            requestAnimationFrame(render);
+          } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      /* =========================================================
+       * 9. 老師設定（localStorage 管理）
+       * ========================================================= */
+      const STORAGE_KEY = "feng_teacher_ai_settings_v1";
+
+      function getTeacherSettings() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : { apiKey: "", endpoint: "", model: "gpt-4o-mini" };
+        } catch (e) {
+          return { apiKey: "", endpoint: "", model: "gpt-4o-mini" };
+        }
+      }
+
+      function saveTeacherSettings(settings) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+        } catch (e) {
+          // 忽略私密瀏覽模式儲存限制
+        }
+        updateEngineBadge();
+      }
+
+      function updateEngineBadge() {
+        const badge = document.getElementById("engineModeBadge");
+        const settings = getTeacherSettings();
+        if (settings.apiKey && settings.apiKey.trim().length > 0) {
+          badge.textContent = `✨ AI 雲端連線模式 (${settings.model || "gpt-4o-mini"})`;
+          badge.classList.add("cloud");
+        } else {
+          badge.textContent = "🟢 離線智能引擎模式（免 API Key）";
+          badge.classList.remove("cloud");
+        }
+      }
+
+      /* =========================================================
+       * 10. 對話介面渲染與遊戲狀態控制
+       * ========================================================= */
+      let currentQuestionIndex = 0;
+      let isFinished = false;
+      let isProcessing = false;
+      let conversationHistory = [];
+
+      function updateProgressUI() {
+        const progressText = document.getElementById("progressText");
+        if (isFinished) {
+          progressText.textContent = "全部完成！🎉";
+        } else {
+          progressText.textContent = `第 ${currentQuestionIndex + 1} 題 / 共 ${QUESTIONS.length} 題`;
+        }
+
+        for (let i = 1; i <= QUESTIONS.length; i++) {
+          const starEl = document.getElementById(`star${i}`);
+          if (isFinished || i <= currentQuestionIndex) {
+            starEl.classList.add("lit");
+          } else {
+            starEl.classList.remove("lit");
+          }
+        }
+      }
+
+      function appendMessage(sender, text, autoSpeak = false) {
+        const chatContainer = document.getElementById("chatContainer");
+        const victoryCard = document.getElementById("victoryCard");
+
+        const row = document.createElement("div");
+        row.className = `msg-row ${sender}`;
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar-sm";
+        if (sender === "teacher") {
+          avatar.innerHTML = TEACHER_SVG;
+        } else {
+          avatar.textContent = "🧒";
+        }
+
+        const bubbleWrap = document.createElement("div");
+        bubbleWrap.className = "bubble-wrap";
+
+        const senderLabel = document.createElement("div");
+        senderLabel.className = "sender-name";
+        senderLabel.textContent = sender === "teacher" ? "馮老師" : "我";
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = text;
+
+        bubbleWrap.appendChild(senderLabel);
+        bubbleWrap.appendChild(bubble);
+
+        if (sender === "teacher") {
+          const replayBtn = document.createElement("button");
+          replayBtn.type = "button";
+          replayBtn.className = "replay-btn";
+          replayBtn.innerHTML = "🔊 粵語再聽一次";
+          replayBtn.addEventListener("click", () => {
+            speakText(text, replayBtn, true);
+          });
+          bubbleWrap.appendChild(replayBtn);
+
+          if (autoSpeak) {
+            speakText(text, replayBtn, false);
+          }
+        }
+
+        row.appendChild(avatar);
+        row.appendChild(bubbleWrap);
+
+        chatContainer.insertBefore(row, victoryCard);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      async function handleSend() {
+        if (isProcessing) return;
+
+        const inputEl = document.getElementById("userInput");
+        const sendBtn = document.getElementById("sendBtn");
+        const rawText = inputEl.value.trim();
+
+        if (!rawText) {
+          inputEl.focus();
+          return;
+        }
+
+        if (isRecording && recognition) {
+          recognition.stop();
+        }
+
+        hideVoiceStatus();
+        const displayUserText = toTraditionalChinese(rawText);
+        appendMessage("student", displayUserText, false);
+        inputEl.value = "";
+
+        isProcessing = true;
+        sendBtn.disabled = true;
+
+        const settings = getTeacherSettings();
+        let outcome = null;
+
+        try {
+          if (settings.apiKey && settings.apiKey.trim().length > 0 && !isFinished) {
+            outcome = await evaluateWithLLM(
+              displayUserText,
+              currentQuestionIndex,
+              settings,
+              conversationHistory
+            );
+          } else {
+            outcome = evaluateWithRuleEngine(displayUserText, currentQuestionIndex);
+          }
+        } catch (err) {
+          outcome = evaluateWithRuleEngine(displayUserText, currentQuestionIndex);
+        }
+
+        conversationHistory.push({ role: "user", content: displayUserText });
+        conversationHistory.push({ role: "assistant", content: outcome.reply });
+
+        if (outcome.passed) {
+          if (outcome.completedAll || currentQuestionIndex >= QUESTIONS.length - 1) {
+            isFinished = true;
+            updateProgressUI();
+            appendMessage("teacher", outcome.reply, true);
+            document.getElementById("victoryCard").classList.add("show");
+            const chatContainer = document.getElementById("chatContainer");
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            launchConfetti();
+          } else {
+            currentQuestionIndex++;
+            updateProgressUI();
+            appendMessage("teacher", outcome.reply, true);
+          }
+        } else {
+          appendMessage("teacher", outcome.reply, true);
+        }
+
+        isProcessing = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+
+      function resetPractice() {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+        currentQuestionIndex = 0;
+        isFinished = false;
+        isProcessing = false;
+        conversationHistory = [];
+
+        const chatContainer = document.getElementById("chatContainer");
+        const victoryCard = document.getElementById("victoryCard");
+        victoryCard.classList.remove("show");
+
+        const oldRows = chatContainer.querySelectorAll(".msg-row");
+        oldRows.forEach((row) => row.remove());
+
+        updateProgressUI();
+        appendMessage("teacher", OPENING_MESSAGE, true);
+        document.getElementById("userInput").focus();
+      }
+
+      /* =========================================================
+       * 11. 初始化與事件綁定
+       * ========================================================= */
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("headerTeacherAvatar").innerHTML = TEACHER_SVG;
+        updateEngineBadge();
+        updateProgressUI();
+
+        // 顯示開場白並以粵語自動朗讀
+        appendMessage("teacher", OPENING_MESSAGE, true);
+
+        const unlockAudioOnce = () => {
+          if ("speechSynthesis" in window && window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+          document.removeEventListener("click", unlockAudioOnce);
+        };
+        document.addEventListener("click", unlockAudioOnce);
+
+        const userInput = document.getElementById("userInput");
+        const sendBtn = document.getElementById("sendBtn");
+        let isComposing = false;
+
+        userInput.addEventListener("compositionstart", () => {
+          isComposing = true;
+        });
+
+        userInput.addEventListener("compositionend", () => {
+          isComposing = false;
+        });
+
+        userInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !isComposing && !e.isComposing && e.keyCode !== 229) {
+            e.preventDefault();
+            handleSend();
+          }
+        });
+
+        sendBtn.addEventListener("click", handleSend);
+
+        document.getElementById("micBtn").addEventListener("click", toggleVoiceInput);
+
+        const ttsToggleBtn = document.getElementById("ttsToggleBtn");
+        const ttsToggleLabel = document.getElementById("ttsToggleLabel");
+        ttsToggleBtn.addEventListener("click", () => {
+          ttsEnabled = !ttsEnabled;
+          if (ttsEnabled) {
+            ttsToggleBtn.classList.remove("tts-off");
+            ttsToggleLabel.textContent = "粵語朗讀開";
+          } else {
+            ttsToggleBtn.classList.add("tts-off");
+            ttsToggleLabel.textContent = "粵語朗讀關";
+            if ("speechSynthesis" in window) {
+              window.speechSynthesis.cancel();
+            }
+          }
+        });
+
+        document.getElementById("restartBtn").addEventListener("click", resetPractice);
+
+        const settingsModal = document.getElementById("settingsModal");
+        const apiKeyInput = document.getElementById("apiKeyInput");
+        const apiEndpointInput = document.getElementById("apiEndpointInput");
+        const apiModelInput = document.getElementById("apiModelInput");
+
+        document.getElementById("openSettingsBtn").addEventListener("click", () => {
+          const current = getTeacherSettings();
+          apiKeyInput.value = current.apiKey || "";
+          apiEndpointInput.value = current.endpoint || "https://api.openai.com/v1/chat/completions";
+          apiModelInput.value = current.model || "gpt-4o-mini";
+          settingsModal.classList.add("open");
+        });
+
+        document.getElementById("closeSettingsBtn").addEventListener("click", () => {
+          settingsModal.classList.remove("open");
+        });
+
+        settingsModal.addEventListener("click", (e) => {
+          if (e.target === settingsModal) {
+            settingsModal.classList.remove("open");
+          }
+        });
+
+        document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+          saveTeacherSettings({
+            apiKey: apiKeyInput.value.trim(),
+            endpoint: apiEndpointInput.value.trim() || "https://api.openai.com/v1/chat/completions",
+            model: apiModelInput.value.trim() || "gpt-4o-mini"
+          });
+          settingsModal.classList.remove("open");
+        });
+
+        document.getElementById("clearSettingsBtn").addEventListener("click", () => {
+          apiKeyInput.value = "";
+          apiEndpointInput.value = "https://api.openai.com/v1/chat/completions";
+          apiModelInput.value = "gpt-4o-mini";
+          saveTeacherSettings({
+            apiKey: "",
+            endpoint: "https://api.openai.com/v1/chat/completions",
+            model: "gpt-4o-mini"
+          });
+          settingsModal.classList.remove("open");
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
